@@ -78,13 +78,14 @@
               contentType: 'application/json',
               data: JSON.stringify({ name: name, email: email }),
               success: function(response) {
-                if (response.Result === 'Success') {
-                  alert('Student added successfully!');
-                  window.location.reload();
-                } else {
-                  alert('Error adding student: ' + response.Message);
-                }
-              }
+  if (response.Result === 'Success') {
+    alert('Student added successfully!');
+    window.location.reload();
+  } else {
+    // If 'Message' is undefined, display a default error message
+    alert('Error adding student: ' + (response.Message || 'Unknown error'));
+  }
+}
             });
           });
     
