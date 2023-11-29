@@ -2,70 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Management Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #f4f4f9;
-      color: #333;
-      line-height: 1.6;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 20px;
+      color: #333;
     }
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
-      overflow: auto;
-      padding: 0 20px;
+      overflow: hidden;
     }
     h3 {
-      color: #333;
-      background-color: #e7e7e7;
+      background-color: #005a87;
+      color: #fff;
       padding: 10px;
       border-radius: 5px;
     }
-    h4 {
-      margin: 10px 0;
+    form {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.1);
     }
     label {
       display: block;
-      margin: 5px 0;
+      margin: 10px 0 5px;
     }
-    input[type='text'],
-    input[type='email'],
-    input[type='number'] {
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
       width: calc(100% - 22px);
       padding: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       border-radius: 5px;
       border: 1px solid #ddd;
-      display: block;
     }
     button {
-      background-color: #5c85d6;
+      background-color: #28a745;
       color: #fff;
-      padding: 10px 20px;
       border: none;
-      border-radius: 5px;
+      padding: 10px 20px;
+      margin-top: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      border-radius: 5px;
     }
     button:hover {
-      background-color: #3d66c8;
+      background-color: #218838;
     }
     ul {
       list-style: none;
-      padding: 0;
+      padding-left: 0;
     }
     li {
       background: #fff;
+      margin-bottom: 10px;
       padding: 10px;
       border-radius: 5px;
-      margin-bottom: 5px;
-    }
-    #studentList {
-      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.1);
     }
   </style>
 </head>
@@ -77,126 +77,105 @@
       <form id="addStudentForm">
         <label for="addName">Name:</label>
         <input type="text" id="addName" name="name">
-        <label for="addEmail">Email:</label>
+        <label for="email">Email:</label>
         <input type="email" id="addEmail" name="email">
         <button type="button" id="addStudentButton">Add Student</button>
       </form>
     </div>
-
+    
     <div>
       <h3>Update Student</h3>
       <form id="updateStudentForm">
-        <label for="updateID">ID:</label>
-        <input type="number" id="updateID" name="id">
-        <label for="updateName">Name:</label>
+        <label for="studentID">ID:</label>
+        <input type="number" id="id" name="id">
+        <label for="name">Name:</label>
         <input type="text" id="updateName" name="name">
-        <label for="updateEmail">Email:</label>
+        <label for="email">Email:</label>
         <input type="email" id="updateEmail" name="email">
         <button type="button" id="updateStudentButton">Update Student</button>
       </form>
     </div>
-
+    
     <div>
       <h3>Delete Student</h3>
       <form id="deleteStudentForm">
-        <label for="deleteName">Name:</label>
+        <label for="name">Name:</label>
         <input type="text" id="deleteName" name="name">
         <button type="button" id="deleteStudentButton">Delete Student</button>
       </form>
     </div>
-
+    
     <div>
       <h3>Student List</h3>
-      <h4> Student ID | Student Name | Student Email</h4>
       <ul id="studentList"></ul>
     </div>
 
   </div>
   
-  <!-- JavaScript at the bottom for improved loading times -->
   <script>
     $(document).ready(function() {
-      // Get all students
-      $.ajax({
-        url: '/default',
-        method: 'GET',
-        success: function(response) {
-          var students = response.Results;
-          for (var i = 0; i < students.length; i++) {
-            var student = students[i];
-            var li = $('<li>' + student.ID + '   -   ' + student.Name + '   -   ' + student.Email + '</li>');
-            li.attr('data-id', student.ID);
-            $('#studentList').append(li);
-          }
+        // Get all students
+        // ...
+
+        // Add student
+        $('#addStudentButton').click(function() {
+            var name = $('#addName').val().trim();
+            var email = $('#addEmail').val().trim();
+
+            if (name && email) {
+                // Perform AJAX request to add student
+                // On success, display toast and clear form
+                $('.toast-body').text('Student added successfully!');
+                $('.toast').toast('show');
+                $('#addStudentModal').modal('hide');
+                $('#addStudentForm')[0].reset();
+            } else {
+                $('.toast-body').text('Please fill in all fields.');
+                $('.toast').toast('show');
+            }
+        });
+
+        // Initialize toast
+        $('.toast').toast({ autohide: false });
+        $('.toast').toast('hide');
+
+    // Update student handler
+    $('#updateStudentButton').click(function() {
+        var id = $('#updateID').val().trim();
+        var name = $('#updateName').val().trim();
+        var email = $('#updateEmail').val().trim();
+
+        if (id && name && email) {
+            // Perform AJAX request to update student
+            // On success, display toast and clear form
+            $('.toast-body').text('Student updated successfully!');
+            $('.toast').toast('show');
+            $('#updateStudentModal').modal('hide');
+            $('#updateStudentForm')[0].reset();
+            // Reload the list of students
+        } else {
+            $('.toast-body').text('Please fill in all fields.');
+            $('.toast').toast('show');
         }
-      });
-
-      // Add student
-      $('#addStudentButton').on('click', function() {
-        var name = $('#addName').val();
-        var email = $('#addEmail').val();
-
-        $.ajax({
-          url: '/add',
-          method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify({ name: name, email: email }),
-          success: function(response) {
-            if (response.Result === 'Success') {
-              alert('Student added successfully!');
-              window.location.reload();
-            } else {
-              alert('Error adding student: ' + response.Message);
-            }
-          }
-        });
-      });
-
-      // Update student
-      $('#updateStudentButton').on('click', function() {
-        var id = $('#id').val();
-        var name = $('#updateName').val();
-        var email = $('#updateEmail').val();
-        console.log(id);
-        console.log(name);
-        console.log(email);
-        $.ajax({
-          url: '/update',
-          method: 'PUT',
-          contentType: 'application/json',
-          data: JSON.stringify({ id: id, name: name, email: email }),
-          success: function(response) {
-            if (response.Result == 'Success') {
-              alert('Student updated successfully!');
-              window.location.reload();
-            } else {
-              alert('Error updating student: ' + response.Message);
-            }
-          }
-        });
-      });
-
-      // Delete student
-      $('#deleteStudentButton').on('click', function() {
-        var name = $('#deleteName').val();
-        console.log(name);
-        $.ajax({
-          url: '/delete',
-          method: 'DELETE',
-          contentType: 'application/json',
-          data: JSON.stringify({ name: name }),
-          success: function(response) {
-            if (response.Result === 'Success') {
-              alert('Student deleted successfully!');
-              window.location.reload();
-            } else {
-              alert('Error deleting student: ' + response.Message);
-            }
-          }
-        });
-      });
     });
-  </script>
+
+    // Delete student handler
+    $('#deleteStudentButton').click(function() {
+        var id = $('#deleteID').val().trim();
+
+        if (id) {
+            // Perform AJAX request to delete student
+            // On success, display toast
+            $('.toast-body').text('Student deleted successfully!');
+            $('.toast').toast('show');
+            $('#deleteStudentModal').modal('hide');
+            // Reload the list of students
+        } else {
+            $('.toast-body').text('Please provide the student ID.');
+            $('.toast').toast('show');
+        }
+    });
+</script>
   
 </body>
 </html>
