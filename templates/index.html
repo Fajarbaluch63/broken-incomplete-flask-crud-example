@@ -107,8 +107,19 @@
     </section>
 <script>
     $(document).ready(function() {
-        // Get all students
-        // ...
+        // Get all students (assuming the Flask backend is sending the correct data)
+        $.ajax({
+            url: '/default',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                var students = response.Results;
+                students.forEach(function(student) {
+                    var li = $('<li>' + student.ID + ' - ' + student.Name + ' - ' + student.Email + '</li>');
+                    $('#studentList').append(li);
+                });
+            }
+        });
 
         // Add student
         $('#addStudentButton').click(function() {
@@ -116,59 +127,74 @@
             var email = $('#addEmail').val().trim();
 
             if (name && email) {
-                // Perform AJAX request to add student
-                // On success, display toast and clear form
-                $('.toast-body').text('Student added successfully!');
-                $('.toast').toast('show');
-                $('#addStudentModal').modal('hide');
-                $('#addStudentForm')[0].reset();
+                $.ajax({
+                    url: '/add',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ name: name, email: email }),
+                    success: function(response) {
+                        alert('Student added successfully!');
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error adding student: ' + xhr.responseText);
+                    }
+                });
             } else {
-                $('.toast-body').text('Please fill in all fields.');
-                $('.toast').toast('show');
+                alert('Please fill in all fields.');
             }
         });
 
-        // Initialize toast
-        $('.toast').toast({ autohide: false });
-        $('.toast').toast('hide');
+        // Update student
+        $('#updateStudentButton').click(function() {
+            var id = $('#id').val().trim();
+            var name = $('#updateName').val().trim();
+            var email = $('#updateEmail').val().trim();
 
-    // Update student handler
-    $('#updateStudentButton').click(function() {
-        var id = $('#updateID').val().trim();
-        var name = $('#updateName').val().trim();
-        var email = $('#updateEmail').val().trim();
+            if (id && name && email) {
+                $.ajax({
+                    url: '/update',
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: id, name: name, email: email }),
+                    success: function(response) {
+                        alert('Student updated successfully!');
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error updating student: ' + xhr.responseText);
+                    }
+                });
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
 
-        if (id && name && email) {
-            // Perform AJAX request to update student
-            // On success, display toast and clear form
-            $('.toast-body').text('Student updated successfully!');
-            $('.toast').toast('show');
-            $('#updateStudentModal').modal('hide');
-            $('#updateStudentForm')[0].reset();
-            // Reload the list of students
-        } else {
-            $('.toast-body').text('Please fill in all fields.');
-            $('.toast').toast('show');
-        }
-    });
+        // Delete student
+        $('#deleteStudentButton').click(function() {
+            var name = $('#deleteName').val().trim();
 
-    // Delete student handler
-    $('#deleteStudentButton').click(function() {
-        var id = $('#deleteID').val().trim();
-
-        if (id) {
-            // Perform AJAX request to delete student
-            // On success, display toast
-            $('.toast-body').text('Student deleted successfully!');
-            $('.toast').toast('show');
-            $('#deleteStudentModal').modal('hide');
-            // Reload the list of students
-        } else {
-            $('.toast-body').text('Please provide the student ID.');
-            $('.toast').toast('show');
-        }
+            if (name) {
+                $.ajax({
+                    url: '/delete',
+                    method: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ name: name }),
+                    success: function(response) {
+                        alert('Student deleted successfully!');
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error deleting student: ' + xhr.responseText);
+                    }
+                });
+            } else {
+                alert('Please provide the student name.');
+            }
+        });
     });
 </script>
+
   
 </body>
 </html>
